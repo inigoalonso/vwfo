@@ -6,7 +6,7 @@ This app describes the Value Weighted Filtered Outdegree (VWFO) metric and it le
 import streamlit as st
 import pandas as pd
 import numpy as np
-import altair as alt
+import plotly.express as px
 
 # Set page properties, if not made before
 try:
@@ -68,12 +68,8 @@ if uploaded_files_1 is not None:
     st.markdown(f"#### {len(designs)} Designs and {len(scenarios)} Scenarios")
     st.caption(f"Detected {len(designs)} designs {designs} and {len(scenarios)} scenarios {scenarios}")
 
-    c = alt.Chart(df_designs).mark_line().encode(
-        x='scenario:N',
-        y='sv:Q',
-        color='design:N'
-    )
-    st.altair_chart(c, use_container_width=True)
+    fig = px.line(df_designs, x="scenario", y="sv", color='design')
+    st.plotly_chart(fig, use_container_width=True)
 
     message_missing_transitions = st.empty()
     if 'uploaded_files_2' in locals():
