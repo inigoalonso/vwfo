@@ -1,0 +1,6 @@
+"design","Test1","Test2","Test3","Test4","Test5"
+"Test1",1,1,1,0,1
+"Test2",0,1,1,1,0
+"Test3",0,1,1,1,1
+"Test4",0,1,0,1,1
+"Test5",1,0,0,1,0
