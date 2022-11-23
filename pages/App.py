@@ -23,6 +23,7 @@ with st.sidebar:
     st.header("Inputs")
     # Example files
     with st.expander("Example csv files"):
+        st.caption("You can use the following example files to test the app:")
         c1, c2, c3 = st.columns([1,1,1])
         c1.download_button(
             label="designs",
@@ -69,7 +70,7 @@ with st.sidebar:
         )
     # Upload designs file
     uploaded_files_1 = st.file_uploader(
-        "Set of designs",
+        "Designs file, e.g. designs.csv",
         type="csv",
         accept_multiple_files=False
     )
@@ -85,7 +86,7 @@ with st.sidebar:
             if i < len(scenarios)-1:
                 expected_files.append(f"{scenario}_{scenarios[i+1]}.csv")
         uploaded_files_2 = st.file_uploader(
-            f"Expected files: {expected_files}",
+            f"Transitions files, e.g. {expected_files}",
             type="csv",
             accept_multiple_files=True
         )
@@ -99,7 +100,7 @@ with st.expander("Help"):
     This app allows you calculate the VWFO of a set of designs.
     For example, if you provide:
     * Set of Designs: `designs.csv`
-    * Available transtions between desings: `s1_s2.csv`, `s2_s3.csv`
+    * Available transtions between designs: `s1_s2.csv`, `s2_s3.csv`
     You will get the following file on the output:
     * `designs_vwfo.csv`
     * **Inputs 1**: 
@@ -107,7 +108,6 @@ with st.expander("Help"):
     * **Inputs 2**: 
         * CSV file(s): upload the CSV files with the available transitions between scenarios.
     * **Output Configuration**: 
-        * Date: Select the date you want to use for the output file (as `yyyymmdd`).
         * Encoding: select the encoding for the csv files.
         * Separator: select the separator for the csv files. 
     * **Outputs**: 
@@ -193,6 +193,7 @@ if (uploaded_files_1 is not None) and ('uploaded_files_2' in locals()) and (uplo
     #     f"VWFO of design {selected_design}: {selected_design_current_vwfo}"
     # )
     # Calculate the VWFO for all designs
+    vwfos = []
     for design in designs:
         design_current_sv = df_designs[
             (df_designs['design'] == design) &
@@ -215,9 +216,15 @@ if (uploaded_files_1 is not None) and ('uploaded_files_2' in locals()) and (uplo
             following_designs_sv
         )
         #st.write(f"VWFO of design {design}: {design_current_vwfo}")
+        vwfos.append(design_current_vwfo)
     # Plot the VWFO of all designs
-    df_tips = px.data.tips()
-    fig_tips = px.violin(df_tips, y="total_bill")
+    # df_tips = px.data.tips()
+    # fig_tips = px.violin(df_tips, y="total_bill")
+    df_vwfos = pd.DataFrame({
+        'design': designs,
+        'vwfo': vwfos
+    })
+    fig_tips = px.violin(df_vwfos, y="vwfo")
     st.plotly_chart(fig_tips, use_container_width=True)
 
 # Reminders to upload files
