@@ -21,14 +21,58 @@ except:
 # Set sidebar elements
 with st.sidebar:
     st.header("Inputs")
+    with st.expander("Example csv files"):
+        c1, c2, c3 = st.columns([1,1,1])
+        c1.download_button(
+            label="designs",
+            data='''"design","scenario","sv"
+    "Test1","s1",130
+    "Test2","s1",220
+    "Test3","s1",33
+    "Test4","s1",60
+    "Test5","s1",70
+    "Test1","s2",100
+    "Test2","s2",20
+    "Test3","s2",74
+    "Test4","s2",6
+    "Test5","s2",110
+    "Test1","s3",150
+    "Test2","s3",50
+    "Test3","s3",133
+    "Test4","s3",260
+    "Test5","s3",75''',
+            file_name="designs.csv",
+            mime="text/csv"
+        )
+        c2.download_button(
+            label="s1_s2",
+            data='''"design","Test1","Test2","Test3","Test4","Test5"
+    "Test1",1,1,1,0,0
+    "Test2",1,1,1,1,0
+    "Test3",1,1,1,0,1
+    "Test4",0,1,0,1,1
+    "Test5",1,0,0,1,1''',
+            file_name="s1_s2.csv",
+            mime="text/csv"
+        )
+        c3.download_button(
+            label="s2_s3",
+            data='''"design","Test1","Test2","Test3","Test4","Test5"
+    "Test1",1,1,1,0,1
+    "Test2",0,1,1,1,0
+    "Test3",0,1,1,1,1
+    "Test4",0,1,0,1,1
+    "Test5",1,0,0,1,1''',
+            file_name="s2_s3.csv",
+            mime="text/csv"
+        )
     uploaded_files_1 = st.file_uploader(
-        "Set of designss", 
-        type="csv", 
+        "Set of designs",
+        type="csv",
         accept_multiple_files=False
     )
     if uploaded_files_1 is not None:
         df_designs = pd.read_csv(uploaded_files_1)
-        #st.dataframe(df_designs)
         scenarios = df_designs['scenario'].unique()
         designs = df_designs['design'].unique()
     expected_files = []
@@ -112,38 +156,38 @@ if (uploaded_files_1 is not None) and ('uploaded_files_2' in locals()) and (uplo
             df_transition = pd.read_csv(file)
             df_transition.set_index('design', inplace=True)
     # Select an individual design
-    selected_design = c1.selectbox(
-        "Select design",
-        options=designs
-    )
-    selected_design_sv = df_designs[
-        df_designs['design'] == selected_design
-    ]['sv'].values
-    selected_design_current_sv = df_designs[
-        (df_designs['design'] == selected_design) &
-        (df_designs['scenario'] == current_scenario)
-    ]['sv'].values[0]
-    selected_design_following_sv = df_designs[
-        (df_designs['design'] == selected_design) &
-        (df_designs['scenario'] == following_scenario)
-    ]['sv'].values[0]
+    # selected_design = c1.selectbox(
+    #     "Select design",
+    #     options=designs
+    # )
+    # selected_design_sv = df_designs[
+    #     df_designs['design'] == selected_design
+    # ]['sv'].values
+    # selected_design_current_sv = df_designs[
+    #     (df_designs['design'] == selected_design) &
+    #     (df_designs['scenario'] == current_scenario)
+    # ]['sv'].values[0]
+    # selected_design_following_sv = df_designs[
+    #     (df_designs['design'] == selected_design) &
+    #     (df_designs['scenario'] == following_scenario)
+    # ]['sv'].values[0]
     # Read the following designs from the transition matrix
-    following_designs = [
-        k for k,v in df_transition.loc[selected_design].to_dict().items() if v == 1
-    ]
-    following_designs_sv = df_designs[
-        (df_designs['design'].isin(following_designs)) &
-        (df_designs['scenario'] == following_scenario)
-        ]['sv'].values
+    # following_designs = [
+    #     k for k,v in df_transition.loc[selected_design].to_dict().items() if v == 1
+    # ]
+    # following_designs_sv = df_designs[
+    #     (df_designs['design'].isin(following_designs)) &
+    #     (df_designs['scenario'] == following_scenario)
+    #     ]['sv'].values
     # Calculate the VWFO for the selected design
-    selected_design_current_vwfo = calculate_vwfo(
-        len(designs),
-        selected_design_current_sv,
-        following_designs_sv
-    )
-    c2.write(
-        f"VWFO of design {selected_design}: {selected_design_current_vwfo}"
-    )
+    # selected_design_current_vwfo = calculate_vwfo(
+    #     len(designs),
+    #     selected_design_current_sv,
+    #     following_designs_sv
+    # )
+    # c2.write(
+    #     f"VWFO of design {selected_design}: {selected_design_current_vwfo}"
+    # )
     # Calculate the VWFO for all designs
     for design in designs:
         design_current_sv = df_designs[
@@ -166,7 +210,7 @@ if (uploaded_files_1 is not None) and ('uploaded_files_2' in locals()) and (uplo
             design_current_sv,
             following_designs_sv
         )
-        st.write(f"VWFO of design {design}: {design_current_vwfo}")
+        #st.write(f"VWFO of design {design}: {design_current_vwfo}")
     # Plot the VWFO of all designs
     df_tips = px.data.tips()
     fig_tips = px.violin(df_tips, y="total_bill")
