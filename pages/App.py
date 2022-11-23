@@ -21,6 +21,7 @@ except:
 # Set sidebar elements
 with st.sidebar:
     st.header("Inputs")
+    # Example files
     with st.expander("Example csv files"):
         c1, c2, c3 = st.columns([1,1,1])
         c1.download_button(
@@ -66,23 +67,26 @@ with st.sidebar:
             file_name="s2_s3.csv",
             mime="text/csv"
         )
+    # Upload designs file
     uploaded_files_1 = st.file_uploader(
         "Set of designs",
         type="csv",
         accept_multiple_files=False
     )
+    # When the designs file is uploaded, show the additional uploader
     if uploaded_files_1 is not None:
         df_designs = pd.read_csv(uploaded_files_1)
+        # Ordered list of unique scenarios
         scenarios = df_designs['scenario'].unique()
+        # Ordered list of unique designs
         designs = df_designs['design'].unique()
-    expected_files = []
-    if uploaded_files_1 is not None:
+        expected_files = []
         for i, scenario in enumerate(scenarios):
             if i < len(scenarios)-1:
                 expected_files.append(f"{scenario}_{scenarios[i+1]}.csv")
         uploaded_files_2 = st.file_uploader(
-            f"Expected files: {expected_files}", 
-            type="csv", 
+            f"Expected files: {expected_files}",
+            type="csv",
             accept_multiple_files=True
         )
 
