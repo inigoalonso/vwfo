@@ -46,13 +46,9 @@ with st.expander("Help"):
     * `designs_vwfo.csv`
     You can set specific encodings and separators for inputs and outputs (or infer them for the inputs).
     * **Inputs 1**: 
-        * CSV file: upload the CSV file with your set of designs. 
-        * Encoding: select the encoding of the CSV files. If you don't know, leave it as it is.
-        * Separator: select the separator of the CSV files. If you don't know, leave it as it is.
+        * CSV file: upload the CSV file with your set of designs.
     * **Inputs 2**: 
         * CSV file(s): upload the CSV files with the available transitions between scenarios. You can upload multiple files at once.
-        * Encoding: select the encoding of the CSV files. If you don't know, leave it as it is.
-        * Separator: select the separator of the CSV files. If you don't know, leave it as it is.
     * **Output Configuration**: 
         * Date: Select the date you want to use for the output file (as `yyyymmdd`).
         * Encoding: select the encoding for the csv files.
