@@ -84,94 +84,93 @@ if uploaded_files_1 is not None:
     # Placeholder for the reminder to upload files
     message_missing_transitions = st.empty()
 
-    # Display the inputs if the transitions are uploaded
-    if 'uploaded_files_2' in locals():
-        if uploaded_files_2 != []:
-            # Display the inputs for transitions
-            st.markdown("#### Design transitions")
-            st.caption("Available transitions between designs")
-            # Plot the designs' transitions between scenarios
-            with st.expander("Transition paths between scenarios", expanded=True):
-                st.write("TODO: plot the transitions between scenarios")
-            # Display outputs
-            st.markdown("#### Output")
-            # Format columns
-            c1, c2 = st.columns([1,1])
-            # Select current scenario
-            current_scenario = c1.selectbox(
-                "Select current scenario",
-                options=scenarios
-            )
-            # Select following scenario
-            following_scenario = c2.selectbox(
-                "Select following scenario",
-                options=np.delete(scenarios, np.where(scenarios==current_scenario))
-            )
-            # Read the transition matrix for the selected scenarios
-            for file in uploaded_files_2:
-                if file.name == f"{current_scenario}_{following_scenario}.csv":
-                    df_transition = pd.read_csv(file)
-                    df_transition.set_index('design', inplace=True)
-            # Select an individual design
-            selected_design = c1.selectbox(
-                "Select design",
-                options=designs
-            )
-            selected_design_sv = df_designs[
-                df_designs['design'] == selected_design
-            ]['sv'].values
-            selected_design_current_sv = df_designs[
-                (df_designs['design'] == selected_design) &
-                (df_designs['scenario'] == current_scenario)
-            ]['sv'].values[0]
-            selected_design_following_sv = df_designs[
-                (df_designs['design'] == selected_design) &
-                (df_designs['scenario'] == following_scenario)
-            ]['sv'].values[0]
-            # Read the following designs from the transition matrix
-            following_designs = [
-                k for k,v in df_transition.loc[selected_design].to_dict().items() if v == 1
-            ]
-            following_designs_sv = df_designs[
-                (df_designs['design'].isin(following_designs)) &
-                (df_designs['scenario'] == following_scenario)
-                ]['sv'].values
-            # Calculate the VWFO for the selected design
-            selected_design_current_vwfo = calculate_vwfo(
-                len(designs),
-                selected_design_current_sv,
-                following_designs_sv
-            )
-            c2.write(
-                f"VWFO of design {selected_design}: {selected_design_current_vwfo}"
-            )
-            # Calculate the VWFO for all designs
-            for design in designs:
-                design_current_sv = df_designs[
-                    (df_designs['design'] == design) &
-                    (df_designs['scenario'] == current_scenario)
-                ]['sv'].values[0]
-                design_following_sv = df_designs[
-                    (df_designs['design'] == design) &
-                    (df_designs['scenario'] == following_scenario)
-                ]['sv'].values[0]
-                following_designs = [
-                    k for k,v in df_transition.loc[design].to_dict().items() if v == 1
-                ]
-                following_designs_sv = df_designs[
-                    (df_designs['design'].isin(following_designs)) &
-                    (df_designs['scenario'] == following_scenario)
-                ]['sv'].values
-                design_current_vwfo = calculate_vwfo(
-                    len(designs),
-                    design_current_sv,
-                    following_designs_sv
-                )
-                st.write(f"VWFO of design {design}: {design_current_vwfo}")
-            # Plot the VWFO of all designs
-            df_tips = px.data.tips()
-            fig_tips = px.violin(df_tips, y="total_bill")
-            st.plotly_chart(fig_tips, use_container_width=True)
+# Display the inputs if the transitions are uploaded
+if (uploaded_files_1 is not None) and ('uploaded_files_2' in locals()) and (uploaded_files_2 != []):
+    # Display the inputs for transitions
+    st.markdown("#### Design transitions")
+    st.caption("Available transitions between designs")
+    # Plot the designs' transitions between scenarios
+    with st.expander("Transition paths between scenarios", expanded=True):
+        st.write("TODO: plot the transitions between scenarios")
+    # Display outputs
+    st.markdown("#### Output")
+    # Format columns
+    c1, c2 = st.columns([1,1])
+    # Select current scenario
+    current_scenario = c1.selectbox(
+        "Select current scenario",
+        options=scenarios
+    )
+    # Select following scenario
+    following_scenario = c2.selectbox(
+        "Select following scenario",
+        options=np.delete(scenarios, np.where(scenarios==current_scenario))
+    )
+    # Read the transition matrix for the selected scenarios
+    for file in uploaded_files_2:
+        if file.name == f"{current_scenario}_{following_scenario}.csv":
+            df_transition = pd.read_csv(file)
+            df_transition.set_index('design', inplace=True)
+    # Select an individual design
+    selected_design = c1.selectbox(
+        "Select design",
+        options=designs
+    )
+    selected_design_sv = df_designs[
+        df_designs['design'] == selected_design
+    ]['sv'].values
+    selected_design_current_sv = df_designs[
+        (df_designs['design'] == selected_design) &
+        (df_designs['scenario'] == current_scenario)
+    ]['sv'].values[0]
+    selected_design_following_sv = df_designs[
+        (df_designs['design'] == selected_design) &
+        (df_designs['scenario'] == following_scenario)
+    ]['sv'].values[0]
+    # Read the following designs from the transition matrix
+    following_designs = [
+        k for k,v in df_transition.loc[selected_design].to_dict().items() if v == 1
+    ]
+    following_designs_sv = df_designs[
+        (df_designs['design'].isin(following_designs)) &
+        (df_designs['scenario'] == following_scenario)
+        ]['sv'].values
+    # Calculate the VWFO for the selected design
+    selected_design_current_vwfo = calculate_vwfo(
+        len(designs),
+        selected_design_current_sv,
+        following_designs_sv
+    )
+    c2.write(
+        f"VWFO of design {selected_design}: {selected_design_current_vwfo}"
+    )
+    # Calculate the VWFO for all designs
+    for design in designs:
+        design_current_sv = df_designs[
+            (df_designs['design'] == design) &
+            (df_designs['scenario'] == current_scenario)
+        ]['sv'].values[0]
+        design_following_sv = df_designs[
+            (df_designs['design'] == design) &
+            (df_designs['scenario'] == following_scenario)
+        ]['sv'].values[0]
+        following_designs = [
+            k for k,v in df_transition.loc[design].to_dict().items() if v == 1
+        ]
+        following_designs_sv = df_designs[
+            (df_designs['design'].isin(following_designs)) &
+            (df_designs['scenario'] == following_scenario)
+        ]['sv'].values
+        design_current_vwfo = calculate_vwfo(
+            len(designs),
+            design_current_sv,
+            following_designs_sv
+        )
+        st.write(f"VWFO of design {design}: {design_current_vwfo}")
+    # Plot the VWFO of all designs
+    df_tips = px.data.tips()
+    fig_tips = px.violin(df_tips, y="total_bill")
+    st.plotly_chart(fig_tips, use_container_width=True)
 
 # Reminders to upload files
 if 'uploaded_files_2' in locals():
